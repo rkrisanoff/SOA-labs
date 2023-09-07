@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title:  Лабораторная работа СОА №1
+  description: "Шабалов и Крисанов"
+  version: 1.0.0
+servers:
+  - url: https://localhost:9000
+    description: production-server
+  - url: https://localhost:9001
+    description: test-server
+paths:
+  /isu/group/{group-id}/expel-all:
+    get:
+      parameters:
+        - name: group-id
+          in: path
+          description: group id
+          required: true
+          schema:
+            type: integer
+            format: int32
+            exclusiveMinimum: true
+            minimum: 0
+      summary: отчисляет всех студентов указанной группы 
+      description: отчисляет всех студентов указанной группы
+      operationId: ExpelAllStudents
+      responses:
+        "200":
+          description: Все студенты указанной группы АБСОЛЮТНО УСПЕШНО отчислены
+          content:
+            application/json:
+              schema: 
+                  type: number
+                  format: int32
+                  nullable: false
+                  minimum: 0
+              example:
+                expelledStudentCount: 2
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema: 
+                type: string
+              example:
+                errorMessage: "Сервер недоступен"
+  /isu/statistics/count-expelled:
+    get:
+      summary: Считает общее число отчисленных студентов во всех группах
+      description: Считает общее число отчисленных студентов во всех группах
+      operationId: getCountExpelled
+      responses:
+        "200":
+            description: Возвращает общее число отчисленных студентов во всех группах
+            content:
+              application/json:
+                schema:
+                  type: number
+                  format: int32
+                  nullable: false
+                  minimum: 0
+                example: 
+                  expelledStudentCount: 100500
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedError'
+                    
+components:
+  schemas:
+    NotFoundError:
+      type: object
+      required:
+        - message
+        - time
+      properties:
+        message:
+          type: string
+          example: Not Found
+        time:
+          type: string
+          format: date-time
+          example: "2077-01-01T00:00:00Z"
+    UnexpectedError:
+      type: object
+      required:
+        - message
+        - time
+      properties:
+        message:
+          type: string
+          example: Сервер недоступен 
+        time:
+          type: string
+          format: date-time
+          example: "2077-01-01T00:00:00Z"
+    BadRequest:
+      type: object
+      required:
+        - message
+        - time
+      properties:
+        message:
+          type: string
+          example: Группы не существует 
+        time:
+          type: string
+          format: date-time
+          example: "2077-01-01T00:00:00Z"

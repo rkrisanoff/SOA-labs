@@ -1,0 +1,443 @@
+openapi: 3.0.0
+info:
+  title:  Лабораторная работа СОА №1
+  description: "Шабалов и Крисанов"
+  version: 1.0.0
+servers:
+  - url: https://localhost:9000
+    description: production-server
+  - url: https://localhost:9001
+    description: test-server
+paths:
+  /study-groups/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+            exclusiveMinimum: true
+            minimum: 0
+      summary: get study group
+      description: get study group
+      operationId: GetStudyGroup
+      responses:
+        "200":
+          description: Группа успешно найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudyGroup"
+        "404":
+          description: Группа с указанным id не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedError'
+    put:
+      summary: Update study group
+      description: Обновляет учебную группу
+      operationId: UpdateStudyGroups
+      parameters:
+        - name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+            exclusiveMinimum: true
+            minimum: 0
+      requestBody:
+        description: StudyGroup
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudyGroup"
+      responses:
+        "200":
+          description: Сущность обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyGroup'
+        "404":
+          description: Группа не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedError'
+    delete:
+      summary: Delete study group
+      description: Delete study group
+      operationId: DeleteStudyGroups
+      parameters:
+        - name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+            exclusiveMinimum: true
+            minimum: 0
+      responses:
+        "200":
+          description: Группа удалена
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "successful"
+        "404":
+          description: Группа не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedError'
+
+  /study-groups:
+    get:
+      summary: Get list of study groups
+      description: Возвращает список учебных групп
+      operationId: GetStudyGroups
+      parameters:
+        - name: sort
+          in: query
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              default: id
+              enum:
+                - id
+                - name
+                - coordinates.x
+                - coordinates.y
+                - creationDate
+                - studentsCount
+                - shouldBeExpelled
+                - formOfEducation
+                - semesterEnum
+                - groupAdmin.name
+                - groupAdmin.passportID
+                - groupAdmin.nationality
+                - groupAdmin.location.x
+                - groupAdmin.location.y
+                - groupAdmin.location.z
+                - -id
+                - -name
+                - -coordinates.x
+                - -coordinates.y
+                - -creationDate
+                - -studentsCount
+                - -shouldBeExpelled
+                - -formOfEducation
+                - -semesterEnum
+                - -groupAdmin.name
+                - -groupAdmin.passportID
+                - -groupAdmin.nationality
+                - -groupAdmin.location.x
+                - -groupAdmin.location.y
+                - -groupAdmin.location.z
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              pattern: '^(id|name|coordinates\.x|coordinates\.y|creationDate|studentsCount|shouldBeExpelled|formOfEducation|semesterEnum|groupAdmin\.name|groupAdmin\.passportID|groupAdmin\.nationality|groupAdmin\.location\.x|groupAdmin\.location\.y|groupAdmin\.location\.z)=(eq|ne|gt|lt|lte|gte):[A-Za-zА-Яа-яёЁ0-9_]+(\[(and|or)\](id|name|coordinates\.x|coordinates\.y|creationDate|studentsCount|shouldBeExpelled|formOfEducation|semesterEnum|groupAdmin\.name|groupAdmin\.passportID|groupAdmin\.nationality|groupAdmin\.location\.x|groupAdmin\.location\.y|groupAdmin\.location\.z)=(eq|ne|gt|lt|lte|gte):[A-Za-zА-Яа-яёЁ0-9_]+)*$'
+              example: 
+                - "id=gt:12[or]id=lt:5"
+                - "name=eq:qwerty"
+          style: deepObject
+          explode: true
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 25
+            minimum: 1
+      responses:
+        "200":
+          description: Возвращает массив групп студентов
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyGroup"
+        "422":
+          description: Ошибка при передаче параметров
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  type: string
+        default:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedError'
+
+    post:
+      summary: Add a new study group
+      description: Add a new study group
+      operationId: AddStudyGroups
+      requestBody:
+        description: StudyGroupDTO
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudyGroup"
+      responses:
+        "200":
+          description: Создана учебная группа
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "successful"
+        default:
+          description: Неизвестная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnexpectedError'
+components:
+  schemas:
+    StudyGroup:
+      description: "Учебная группа"
+      type: object
+      required:
+        - name
+        - coordinates
+        - shouldBeExpelled
+        - formOfEducation
+        - semesterEnum
+      properties:
+        id:
+          type: integer
+          exclusiveMinimum: true
+          minimum: 0
+          nullable: false
+          format: int32
+        name:
+          type: string
+          minLength: 1
+          nullable: false
+        coordinates:
+          $ref: "#/components/schemas/Coordinates"
+        creationDate:
+          nullable: false
+          type: string
+          format: date-time
+        studentsCount:
+          type: integer
+          exclusiveMinimum: true
+          minimum: 0
+          format: int64
+        shouldBeExpelled:
+          nullable: false
+          type: integer
+          exclusiveMinimum: true
+          minimum: 0
+          format: int32
+        formOfEducation:
+          $ref: "#/components/schemas/FormOfEducation"
+        semesterEnum:
+          $ref: "#/components/schemas/Semester"
+        groupAdmin:
+          $ref: "#/components/schemas/Person"
+    FormOfEducation:
+      type: string
+      enum:
+        - DISTANCE_EDUCATION
+        - FULL_TIME_EDUCATION
+        - EVENING_CLASSES
+      example: DISTANCE_EDUCATION
+    Semester:
+      type: string
+      enum:
+        - FOURTH
+        - FIFTH
+        - SIXTH
+      example: FOURTH
+    Country:
+      type: string
+      enum:
+        - UNITED_KINGDOM
+        - INDIA
+        - ITALY
+        - SOUTH_KOREA
+      example: SOUTH_KOREA
+    Location:
+      type: object
+      additionalProperties: false
+      required:
+        - x
+        - y
+        - z
+      properties:
+        x:
+          format: double
+          nullable: true
+          example: 100500
+          minimum: 0
+          exclusiveMinimum: true
+        y:
+          type: integer
+          format: int64
+          nullable: false
+          example: 100500.0
+          minimum: 0
+          exclusiveMinimum: true
+        z:
+          type: number
+          nullable: false
+          example: 3.141592
+          minimum: 0
+          exclusiveMinimum: true
+    Coordinates:
+      type: object
+      additionalProperties: false
+      required:
+        - x
+        - y
+      properties:
+        x:
+          type: number
+          format: float
+          nullable: true
+          example: 100500
+          minimum: 0
+          exclusiveMinimum: true
+        y:
+          type: number
+          format: float
+          nullable: false
+          example: 100500.0
+          minimum: 0
+          exclusiveMinimum: true
+    Person:
+      additionalProperties: false
+      type: object
+      required:
+        - name
+        - passpordID
+        - nationality
+        - location
+      properties:
+        name:
+          format: string
+          nullable: false
+          minLength: 1
+          maxLength: 255
+        passpordID:
+          format: string
+          nullable: false
+          minLength: 7
+          maxLength: 255
+        nationality:
+          $ref: "#/components/schemas/Country"
+        location:
+          format: string
+          minLength: 5
+          maxLength: 255
+          nullable: false
+    NotFoundError:
+      additionalProperties: false
+      type: object
+      required:
+        - message
+        - time
+      properties:
+        message:
+          description: Информативный лог ошибки 
+          type: string
+          minLength: 5
+          maxLength: 255
+          example: Not Found
+        time:
+          description: Время возникновения ошибки 
+          type: string
+          format: date-time
+          minLength: 21
+          maxLength: 21
+          example: "2077-01-01T00:00:00Z"
+    UnexpectedError:
+      additionalProperties: false
+      type: object
+      required:
+        - message
+        - time
+      properties:
+        message:
+          description: Информативный лог ошибки 
+          type: string
+          minLength: 5
+          maxLength: 255
+          example: Сервер недоступен 
+        time:
+          description: Время возникновения ошибки 
+          type: string
+          format: date-time
+          minLength: 21
+          maxLength: 21
+          example: "2077-01-01T00:00:00Z"
+    BadRequest:
+      additionalProperties: false
+      type: object
+      required:
+        - message
+        - time
+      properties:
+        message:
+          description: Информативный лог ошибки 
+          type: string
+          example: Группы не существует 
+          minLength: 5
+          maxLength: 255
+        time:
+          description: Время возникновения ошибки 
+          type: string
+          format: date-time
+          minLength: 21
+          maxLength: 21
+          example: "2077-01-01T00:00:00Z"
