@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="2c47e02f-fb08-47b3-888f-aba4e51581c9" name="soa@localhost Mapping">
+      <data-sources db="4d0e2333-73e9-4be9-9456-5b4eb3593d33" ddl="aac8e68d-90d0-4691-90ad-5a3fd8082c06" />
+      <scope>
+        <node kind="database" qname="soa">
+          <node kind="schema" qname="soa" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="aac8e68d-90d0-4691-90ad-5a3fd8082c06" />
+          <option name="name" value="soa@localhost (DDL)" />
+          <option name="dbmsName" value="POSTGRES" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/src/main/resources/DDL/init.sql" />
+            </array>
+          </option>
+          <option name="outLayout" value="File per object by schema.groovy" />
+          <option name="scriptOptions">
+            <map>
+              <entry key="CreateIfNotExists" value="1" />
+            </map>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>
