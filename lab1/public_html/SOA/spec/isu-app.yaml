@@ -40,10 +40,9 @@ paths:
           description: Неизвестная ошибка
           content:
             application/json:
-              schema: 
-                type: string
-              example:
-                errorMessage: "Сервер недоступен"
+              schema:
+                $ref: '#/components/schemas/UnexpectedError'
+                
   /isu/statistics/count-expelled:
     get:
       summary: Считает общее число отчисленных студентов во всех группах

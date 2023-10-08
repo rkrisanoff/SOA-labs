@@ -137,34 +137,34 @@ paths:
               enum:
                 - id
                 - name
-                - coordinates.x
-                - coordinates.y
+                - coordinates__x
+                - coordinates__y
                 - creationDate
                 - studentsCount
                 - shouldBeExpelled
                 - formOfEducation
                 - semesterEnum
-                - groupAdmin.name
-                - groupAdmin.passportID
-                - groupAdmin.nationality
-                - groupAdmin.location.x
-                - groupAdmin.location.y
-                - groupAdmin.location.z
+                - groupAdmin__name
+                - groupAdmin__passportID
+                - groupAdmin__nationality
+                - groupAdmin__location__x
+                - groupAdmin__location__y
+                - groupAdmin__location__z
                 - -id
                 - -name
-                - -coordinates.x
-                - -coordinates.y
+                - -coordinates__x
+                - -coordinates__y
                 - -creationDate
                 - -studentsCount
                 - -shouldBeExpelled
                 - -formOfEducation
                 - -semesterEnum
-                - -groupAdmin.name
-                - -groupAdmin.passportID
-                - -groupAdmin.nationality
-                - -groupAdmin.location.x
-                - -groupAdmin.location.y
-                - -groupAdmin.location.z
+                - -groupAdmin__name
+                - -groupAdmin__passportID
+                - -groupAdmin__nationality
+                - -groupAdmin__location__x
+                - -groupAdmin__location__y
+                - -groupAdmin__location__z
         - name: filter
           in: query
           required: false
@@ -172,10 +172,8 @@ paths:
             type: array
             items:
               type: string
-              pattern: '^(id|name|coordinates\.x|coordinates\.y|creationDate|studentsCount|shouldBeExpelled|formOfEducation|semesterEnum|groupAdmin\.name|groupAdmin\.passportID|groupAdmin\.nationality|groupAdmin\.location\.x|groupAdmin\.location\.y|groupAdmin\.location\.z)=(eq|ne|gt|lt|lte|gte):[A-Za-zА-Яа-яёЁ0-9_]+(\[(and|or)\](id|name|coordinates\.x|coordinates\.y|creationDate|studentsCount|shouldBeExpelled|formOfEducation|semesterEnum|groupAdmin\.name|groupAdmin\.passportID|groupAdmin\.nationality|groupAdmin\.location\.x|groupAdmin\.location\.y|groupAdmin\.location\.z)=(eq|ne|gt|lt|lte|gte):[A-Za-zА-Яа-яёЁ0-9_]+)*$'
-              example: 
-                - "id=gt:12[or]id=lt:5"
-                - "name=eq:qwerty"
+              pattern: '^(id|name|coordinates__x|coordinates__y|creationDate|studentsCount|shouldBeExpelled|formOfEducation|semesterEnum|groupAdmin__name|groupAdmin__passportID|groupAdmin__nationality|groupAdmin__location__x|groupAdmin__location__y|groupAdmin__location__z):[A-Za-zА-Яа-яёЁ0-9_]+$'
+              example: "groupAdmin__nationality:SOURTH_KOREA"
           style: deepObject
           explode: true
         - name: page
@@ -316,7 +314,7 @@ components:
         - z
       properties:
         x:
-          format: double
+          type: number
           nullable: true
           example: 100500
           minimum: 0
@@ -377,10 +375,7 @@ components:
         nationality:
           $ref: "#/components/schemas/Country"
         location:
-          format: string
-          minLength: 5
-          maxLength: 255
-          nullable: false
+          $ref: "#/components/schemas/Location"
     NotFoundError:
       additionalProperties: false
       type: object
