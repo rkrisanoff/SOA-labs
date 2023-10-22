@@ -1,59 +1,42 @@
 package ifmo.drukhary.StudyGroupsApp.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "Coordinates", schema = "", catalog = "")
 public class CoordinatesEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Setter
     private Double x;
+
+    @Setter
     private double y;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Basic
-    @Column(name = "x", nullable = true, precision = 0)
-    public Double getX() {
-        return x;
-    }
-
-    public void setX(Double x) {
-        this.x = x;
-    }
-
-    @Basic
-    @Column(name = "y", nullable = false, precision = 0)
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CoordinatesEntity that = (CoordinatesEntity) o;
-        return Double.compare(y, that.y) == 0 && Objects.equals(x, that.x);
+        return Double.compare(y, that.y) == 0 && Objects.equals(x, that.x) && (long) id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return Objects.hash(id, x, y);
     }
 }

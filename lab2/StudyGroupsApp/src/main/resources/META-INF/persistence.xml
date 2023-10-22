@@ -9,10 +9,13 @@
             <property name="jakarta.persistence.schema-generation.create-source" value="metadata"/>
             <property name="jakarta.persistence.schema-generation.drop-source" value="metadata"/>
             <property name="hibernate.show_sql" value="true"/>
+
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.username" value="drukhary"/>
+            <property name="hibernate.connection.password" value="142857"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/soa"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
-        <class>ifmo.drukhary.StudyGroupsApp.entities.CoordinatesEntity</class>
-<!--        <class>ifmo.drukhary.StudyGroupsApp.entities.LocationEntity</class>-->
-<!--        <class>ifmo.drukhary.StudyGroupsApp.entities.PersonEntity</class>-->
-<!--        <class>ifmo.drukhary.StudyGroupsApp.entities.StudyGroupEntity</class>-->
     </persistence-unit>
 </persistence>
