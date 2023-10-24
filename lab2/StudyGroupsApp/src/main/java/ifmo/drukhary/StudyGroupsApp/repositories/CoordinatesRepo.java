@@ -1,7 +1,13 @@
-//package ifmo.drukhary.StudyGroupsApp.repositories;
-//
-//import ifmo.drukhary.StudyGroupsApp.entities.CoordinatesEntity;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//
-//public interface CoordinatesRepo extends JpaRepository<CoordinatesEntity, String> {
-//}
+package ifmo.drukhary.StudyGroupsApp.repositories;
+
+import ifmo.drukhary.StudyGroupsApp.entities.CoordinatesEntity;
+
+import java.util.List;
+
+public interface CoordinatesRepo  {
+
+    public List<CoordinatesEntity> getAll();
+    public CoordinatesEntity getById(long id);
+    public long create(CoordinatesEntity coordinates);
+
+}
