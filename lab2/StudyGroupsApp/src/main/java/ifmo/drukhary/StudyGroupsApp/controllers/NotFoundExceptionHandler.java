@@ -1,5 +1,6 @@
 package ifmo.drukhary.StudyGroupsApp.controllers;
 
+import ifmo.drukhary.StudyGroupsApp.DTO.ErrorDTO;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -17,7 +18,7 @@ public class NotFoundExceptionHandler implements ExceptionMapper<NotFoundExcepti
     private HttpHeaders headers;
 
     public Response toResponse(NotFoundException ex){
-        return Response.status(404).entity("").type( getAcceptType()).build();
+        return Response.status(404).entity(new ErrorDTO("Not Found")).type( getAcceptType()).build();
     }
 
     private String getAcceptType(){
