@@ -1,6 +1,7 @@
 package ifmo.drukhary.StudyGroupsApp.controllers;
 
 import ifmo.drukhary.StudyGroupsApp.DTO.ErrorDTO;
+import ifmo.drukhary.StudyGroupsApp.exceptions.InvalidParametersExceprions;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -17,8 +18,14 @@ public class NotFoundExceptionHandler implements ExceptionMapper<NotFoundExcepti
     @Context
     private HttpHeaders headers;
 
-    public Response toResponse(NotFoundException ex){
-        return Response.status(404).entity(new ErrorDTO("Not Found")).type( getAcceptType()).build();
+    public Response toResponse(NotFoundException ex)
+    {
+        if (ex.getCause() instanceof InvalidParametersExceprions){
+            return Response.status(404).entity(new ErrorDTO("Not Found")).type( getAcceptType()).build();
+
+        }
+        return Response.status(500).entity(ex.getMessage())
+                .build();
     }
 
     private String getAcceptType(){
