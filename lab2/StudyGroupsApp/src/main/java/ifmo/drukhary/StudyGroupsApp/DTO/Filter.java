@@ -5,4 +5,4 @@ import lombok.Getter;
 
 //@AllArgsConstructor
 //@Getter
-public record Filter(String attributeName, Object attributeValue, String condition){}
+public record Filter(String attributeName, Object attributeValue){}

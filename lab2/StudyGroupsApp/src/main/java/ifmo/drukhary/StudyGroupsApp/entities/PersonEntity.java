@@ -1,15 +1,12 @@
 package ifmo.drukhary.StudyGroupsApp.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,23 +17,18 @@ public class PersonEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Setter
 
     @Basic
     @Column(name = "name", nullable = false, length = 64)
     private String name;
-    @Setter
 
     @Basic
     @Column(name = "passportID", nullable = false, length = 64)
     private String passportID;
-    @Setter
 
     @Basic
     @Column(name = "nationality", nullable = true)
     private String nationality;
-
-    @Setter
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", nullable = false, referencedColumnName = "id")

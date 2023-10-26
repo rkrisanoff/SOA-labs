@@ -4,18 +4,11 @@ import ifmo.drukhary.StudyGroupsApp.DTO.Filter;
 import ifmo.drukhary.StudyGroupsApp.entities.StudyGroupEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +22,7 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
 
     @Override
     @Transactional
-    public List<StudyGroupEntity> getAll(List<Filter> filters, int offset, int limit) {
+    public List<StudyGroupEntity> getAll(List<Filter> filters, List<String> sorts,int offset, int limit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StudyGroupEntity> criteriaQuery
                 = criteriaBuilder.createQuery(StudyGroupEntity.class);
@@ -37,43 +30,56 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
         Root<StudyGroupEntity> studyGroups
                 = criteriaQuery.from(StudyGroupEntity.class);
         Predicate[] predicates = filters.stream()
-//                .reduce(new HashMap<String[],Filter[]>(), (HashMap<String[],List<Filter>> acc, Filter filter)->{
-//                    acc.containsKey(filter.attributeName())
-//                    acc.put(filter.attributeName(),);
-//                })
                 .collect(Collectors.groupingBy(Filter::attributeName))
                 .entrySet().stream()
                 .map(filtersByAttribute -> criteriaBuilder.or(
                                 filtersByAttribute.getValue().stream()
                                         .map(filter -> criteriaBuilder.equal(
-                                                studyGroups.get(filtersByAttribute.getKey()),
+                                                getExpressionByFieldName(studyGroups, filtersByAttribute.getKey()),
                                                 filter.attributeValue()
                                         )).toArray(Predicate[]::new)
                         )
                 ).toArray(Predicate[]::new);
-        criteriaQuery.select(studyGroups);
-//                .where(criteriaBuilder.and(predicates));
-//                .where(criteriaBuilder.equal(studyGroups.get("coordinates").get("x"),3));
+
+        if (sorts == null || sorts.isEmpty()) {
+            sorts = List.of("id");
+        }
+
+        criteriaQuery.select(studyGroups).orderBy(
+                sorts.stream().toList().stream().map(sort -> {
+                    if (sort.startsWith("-")){
+                        return criteriaBuilder.desc(getExpressionByFieldName(studyGroups,sort.substring(1)));
+                    } else {
+                        return criteriaBuilder.asc(getExpressionByFieldName(studyGroups,sort));
+                    }
+                }).toArray(Order[]::new)
+        ).where(criteriaBuilder.and(predicates));
 
         return entityManager
                 .createQuery(criteriaQuery)
                 .setFirstResult(offset)
-                .setMaxResults(50)
+                .setMaxResults(limit)
                 .getResultList();
 
+    }
 
-//
-//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<Employee> query = cb.createQuery(Employee.class);
-//        Root<Employee> employee = query.from(Employee.class);
-//        Join<Employee, Department> department = employee.join("department");
-//        query.select(employee).where(cb.equal(department.get("name"), "IT"));
-//        List<Employee> employees = entityManager.createQuery(query).getResultList();
+    private static<T> Expression<?> getExpressionByFieldName(Root<T> root, String attributeName) {
+        if (attributeName.contains(".")) {
+            String[] parts = attributeName.split("[.]");
 
+            Path<?> childrenRoot = root;
 
-//        TypedQuery<StudyGroupEntity> query = entityManager.createQuery(criteriaQuery);
-//        List<StudyGroupEntity> coordinatesList = query.getResultList();
-//        return coordinatesList;
+            for (String attr: parts) {
+                if (attr.isBlank())
+                    throw new RuntimeException("Attribute cannot be blank string");
+                else
+                    childrenRoot = childrenRoot.get(attr);
+            }
+
+            return childrenRoot;
+        }
+
+        return root.get(attributeName);
     }
 
     @Override
@@ -86,7 +92,6 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
     @Transactional
     public Optional<StudyGroupEntity> create(StudyGroupEntity studyGroup) {
         if (studyGroup != null) {
-            if (entityManager.find(StudyGroupEntity.class, studyGroup.getId()) == null) {
                 if (studyGroup.getCreationDate() == null)
                     studyGroup.setCreationDate(java.time.LocalDate.now());
 
@@ -94,7 +99,6 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
 
                 StudyGroupEntity result = entityManager.merge(studyGroup);
                 return Optional.ofNullable(result);
-            }
         }
         return Optional.empty();
     }

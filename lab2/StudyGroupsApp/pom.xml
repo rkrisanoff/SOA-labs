@@ -10,12 +10,46 @@
     <name>StudyGroupsApp</name>
     <packaging>war</packaging>
 
+
+    <repositories>
+        <repository>
+            <id>payara-nexus-artifacts</id>
+            <url>https://nexus.payara.fish/repository/payara-artifacts</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
         <junit.version>5.9.2</junit.version>
+        <version.payara>5.2022.2</version.payara>
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
     </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>fish.payara.api</groupId>
+                <artifactId>payara-bom</artifactId>
+                <version>${version.payara}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+
     <dependencies>
             <dependency>
                 <groupId>javax</groupId>
@@ -56,11 +90,11 @@
             <artifactId>hibernate-core</artifactId>
             <version>6.1.7.Final</version>
         </dependency>
-        <dependency>
-            <groupId>io.hypersistence</groupId>
-            <artifactId>hypersistence-utils-hibernate-60</artifactId>
-            <version>3.3.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.hypersistence</groupId>-->
+<!--            <artifactId>hypersistence-utils-hibernate-60</artifactId>-->
+<!--            <version>3.3.1</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
@@ -122,14 +156,74 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>fish.payara.ecosystem.jaxrs</groupId>
+            <artifactId>rest-ssl-configuration</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>fish.payara.extras</groupId>
+            <artifactId>payara-micro</artifactId>
+            <version>${version.payara}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
+        <finalName>StudyGroupApp</finalName>
         <plugins>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-war-plugin</artifactId>-->
+<!--                <version>3.3.2</version>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>3.10.1</version>-->
+<!--                <configuration>-->
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>org.projectlombok</groupId>-->
+<!--                            <artifactId>lombok</artifactId>-->
+<!--                            <version>1.18.30</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>org.projectlombok</groupId>-->
+<!--                            <artifactId>lombok-mapstruct-binding</artifactId>-->
+<!--                            <version>0.2.0</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>org.mapstruct</groupId>-->
+<!--                            <artifactId>mapstruct-processor</artifactId>-->
+<!--                            <version>${mapstruct.version}</version>-->
+<!--                        </path>-->
+<!--                    </annotationProcessorPaths>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin><groupId>org.apache.maven.plugins</groupId>-->
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
+<!--                <configuration>-->
+<!--                    <failOnMissingWebXml>false</failOnMissingWebXml>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>fish.payara.maven.plugins</groupId>-->
+<!--                <artifactId>payara-micro-maven-plugin</artifactId>-->
+<!--                <version>2.0</version>-->
+<!--                <configuration>-->
+<!--                    <payaraVersion>${version.payara}</payaraVersion>-->
+<!--                    <deployWar>true</deployWar>-->
+<!--                    <commandLineOptions>-->
+<!--                        <option>-->
+<!--                            <key>&#45;&#45;autoBindHttp</key>-->
+<!--                        </option>-->
+<!--                    </commandLineOptions>-->
+<!--                    <contextRoot>/first-service</contextRoot>-->
+<!--                </configuration>-->
             </plugin>
         </plugins>
     </build>

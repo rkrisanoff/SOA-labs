@@ -1,15 +1,12 @@
 package ifmo.drukhary.StudyGroupsApp.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -19,18 +16,15 @@ public class LocationEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Setter
 
     @Basic
     @Column(name = "x", nullable = true, precision = 0)
     private Double x;
-    @Setter
 
     @Basic
     @Column(name = "y", nullable = false)
 
     private long y;
-    @Setter
 
     @Basic
     @Column(name = "z", nullable = false, precision = 0)

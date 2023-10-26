@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface StudyGroupRepo {
 
-    public List<StudyGroupEntity> getAll(List<Filter> filters, int offset, int limit);
+    public List<StudyGroupEntity> getAll(List<Filter> filters, List<String> sorts, int offset, int limit);
     public Optional<StudyGroupEntity> getById(int id);
     public Optional<StudyGroupEntity> create(StudyGroupEntity studyGroup);
 
