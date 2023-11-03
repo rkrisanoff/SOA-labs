@@ -2,11 +2,13 @@ package ifmo.drukhary.StudyGroupsApp.repositories;
 
 import ifmo.drukhary.StudyGroupsApp.DTO.Filter;
 import ifmo.drukhary.StudyGroupsApp.entities.StudyGroupEntity;
+import ifmo.drukhary.StudyGroupsApp.exceptions.StudyGroupDoesNotExistException;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,12 +24,12 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
 
     @Override
     @Transactional
-    public List<StudyGroupEntity> getAll(List<Filter> filters, List<String> sorts,int offset, int limit) {
+    public List<StudyGroupEntity> getAll(List<Filter> filters, List<String> sorts, int offset, int limit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StudyGroupEntity> criteriaQuery
                 = criteriaBuilder.createQuery(StudyGroupEntity.class);
 
-        Root<StudyGroupEntity> studyGroups
+        Root<StudyGroupEntity> root
                 = criteriaQuery.from(StudyGroupEntity.class);
         Predicate[] predicates = filters.stream()
                 .collect(Collectors.groupingBy(Filter::attributeName))
@@ -35,7 +37,7 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
                 .map(filtersByAttribute -> criteriaBuilder.or(
                                 filtersByAttribute.getValue().stream()
                                         .map(filter -> criteriaBuilder.equal(
-                                                getExpressionByFieldName(studyGroups, filtersByAttribute.getKey()),
+                                                getExpressionByFieldName(root, filtersByAttribute.getKey()),
                                                 filter.attributeValue()
                                         )).toArray(Predicate[]::new)
                         )
@@ -45,12 +47,12 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
             sorts = List.of("id");
         }
 
-        criteriaQuery.select(studyGroups).orderBy(
+        criteriaQuery.select(root).orderBy(
                 sorts.stream().toList().stream().map(sort -> {
-                    if (sort.startsWith("-")){
-                        return criteriaBuilder.desc(getExpressionByFieldName(studyGroups,sort.substring(1)));
+                    if (sort.startsWith("-")) {
+                        return criteriaBuilder.desc(getExpressionByFieldName(root, sort.substring(1)));
                     } else {
-                        return criteriaBuilder.asc(getExpressionByFieldName(studyGroups,sort));
+                        return criteriaBuilder.asc(getExpressionByFieldName(root, sort));
                     }
                 }).toArray(Order[]::new)
         ).where(criteriaBuilder.and(predicates));
@@ -63,13 +65,13 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
 
     }
 
-    private static<T> Expression<?> getExpressionByFieldName(Root<T> root, String attributeName) {
+    private static <T> Expression<?> getExpressionByFieldName(Root<T> root, String attributeName) {
         if (attributeName.contains(".")) {
             String[] parts = attributeName.split("[.]");
 
             Path<?> childrenRoot = root;
 
-            for (String attr: parts) {
+            for (String attr : parts) {
                 if (attr.isBlank())
                     throw new RuntimeException("Attribute cannot be blank string");
                 else
@@ -92,13 +94,13 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
     @Transactional
     public Optional<StudyGroupEntity> create(StudyGroupEntity studyGroup) {
         if (studyGroup != null) {
-                if (studyGroup.getCreationDate() == null)
-                    studyGroup.setCreationDate(java.time.LocalDate.now());
+            if (studyGroup.getCreationDate() == null)
+                studyGroup.setCreationDate(java.time.LocalDate.now());
 
-                entityManager.persist(studyGroup);
+            entityManager.persist(studyGroup);
 
-                StudyGroupEntity result = entityManager.merge(studyGroup);
-                return Optional.ofNullable(result);
+            StudyGroupEntity result = entityManager.merge(studyGroup);
+            return Optional.ofNullable(result);
         }
         return Optional.empty();
     }
@@ -118,7 +120,61 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
 
     @Override
     @Transactional
-    public boolean deleteById(int id) {
-        return false;
+    public void deleteById(int id) throws StudyGroupDoesNotExistException {
+        Optional<StudyGroupEntity> maybeStudyGroup = getById(id);
+        if (maybeStudyGroup.isEmpty()) {
+            throw new NotFoundException();
+        }
+        entityManager.remove(maybeStudyGroup.get());
+
     }
+
+
+    @Override
+    @Transactional
+    public Long getAllStudentCount() {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = cb.createQuery(Long.class);
+        Root<StudyGroupEntity> root = criteriaQuery.from(StudyGroupEntity.class);
+
+        Expression<Long> sumExpression = cb.sum(root.get("studentsCount"));
+        criteriaQuery.select(sumExpression);
+
+        return entityManager.createQuery(criteriaQuery).getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public List<StudyGroupEntity> getAllWithNameStartWith(String name) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<StudyGroupEntity> criteriaQuery
+                = criteriaBuilder.createQuery(StudyGroupEntity.class);
+
+        Root<StudyGroupEntity> root
+                = criteriaQuery.from(StudyGroupEntity.class);
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.like(root.get("name"), "%" + name + "%"))
+                .orderBy(criteriaBuilder.asc(root.get("id")));
+
+
+        return entityManager
+                .createQuery(criteriaQuery)
+                .getResultList();
+
+    }
+
+    @Override
+    @Transactional
+    public int deleteAllByStudentCount(long studentCount) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaDelete<StudyGroupEntity> query = criteriaBuilder.createCriteriaDelete(StudyGroupEntity.class);
+        Root<StudyGroupEntity> root = query.from(StudyGroupEntity.class);
+
+        query.where(criteriaBuilder.equal(root.get("studentsCount"), studentCount));
+
+        return entityManager.createQuery(query).executeUpdate();
+    }
+
 }

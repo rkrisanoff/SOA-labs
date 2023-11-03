@@ -1,13 +1,13 @@
 package ifmo.drukhary.StudyGroupsApp.DTO;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Setter;
 
 @Data
 public class Location {
-    private Double x;
-    private long y;
-    private double z;
+    private double x;
+    @NotNull(message = "y must be not null")
+    private Long y; //Поле не может быть null
+    @NotNull(message = "z must be not null")
+    private Double z; //Поле не может быть null
 }

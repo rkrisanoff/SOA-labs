@@ -1,18 +1,32 @@
 package ifmo.drukhary.StudyGroupsApp.DTO;
 
-import ifmo.drukhary.StudyGroupsApp.entities.CoordinatesEntity;
-import ifmo.drukhary.StudyGroupsApp.entities.PersonEntity;
-import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.Setter;
+
 @Data
 public class StudyGroupBase {
-    private String name;
-    private Coordinates coordinates;
-    private java.time.LocalDate creationDate;
-    private Long studentsCount;
-    private int shouldBeExpelled;
-    private String formOfEducation;
-    private String semesterEnum;
-    private Person groupAdmin;
+    @NotNull
+    @Size(min = 1, max = 50, message = "Name must be between 2 and 50 characters")
+    private String name; //Поле не может быть null, Строка не может быть пустой
+    @Valid
+    @NotNull(message = "coordinates must be not null")
+    private Coordinates coordinates; //Поле не может быть null
+    @Min(value = 1, message = "studentsCount must be greater than 0")
+    @NotNull(message = "studentsCount must be not null")
+    private long studentsCount; //Значение поля должно быть больше 0
+    @NotNull(message = "shouldBeExpelled must be not null")
+    @Min(value = 1, message = "shouldBeExpelled must be greater than 0")
+    @Max(value = 2147483647, message = "shouldBeExpelled must be less than 2147483647")
+    private Integer shouldBeExpelled; //Значение поля должно быть больше 0, Поле не может быть null
+    @NotNull(message = "formOfEducation must be not null")
+    @Pattern(regexp = "DISTANCE_EDUCATION|FULL_TIME_EDUCATION|EVENING_CLASSES", message = "formOfEducation must be one of DISTANCE_EDUCATION, FULL_TIME_EDUCATION or EVENING_CLASSES")
+    private String formOfEducation; //Поле не может быть null
+    @NotNull(message = "semesterEnum must be not null")
+    @Pattern(regexp = "FOURTH|FIFTH|SIXTH", message = "semesterEnum must be one of FOURTH, FIFTH or SIXTH")
+    private String semesterEnum; //Поле может быть null
+    @NotNull
+    @Valid
+    private Person groupAdmin; //Поле не может быть null
+
 }

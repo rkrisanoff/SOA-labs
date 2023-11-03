@@ -19,17 +19,17 @@ public class LocationEntity implements Serializable {
 
     @Basic
     @Column(name = "x", nullable = true, precision = 0)
-    private Double x;
+    private double x;
 
     @Basic
     @Column(name = "y", nullable = false)
 
-    private long y;
+    private Long y;
 
     @Basic
     @Column(name = "z", nullable = false, precision = 0)
 
-    private double z;
+    private Double z;
 
     @Override
     public boolean equals(Object o) {

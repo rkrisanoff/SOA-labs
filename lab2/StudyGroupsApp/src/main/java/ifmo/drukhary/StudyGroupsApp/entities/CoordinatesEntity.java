@@ -18,10 +18,10 @@ public class CoordinatesEntity implements Serializable {
     private Long id;
     @Basic
     @Column(name = "x", nullable = false)
-    private Double x;
+    private float x;
     @Basic
     @Column(name = "y", nullable = false)
-    private double y;
+    private Float y;
 
 
     @Override

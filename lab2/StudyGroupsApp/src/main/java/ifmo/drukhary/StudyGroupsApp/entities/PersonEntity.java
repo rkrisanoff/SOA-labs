@@ -1,7 +1,9 @@
 package ifmo.drukhary.StudyGroupsApp.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,11 +21,11 @@ public class PersonEntity implements Serializable {
     private Long id;
 
     @Basic
-    @Column(name = "name", nullable = false, length = 64)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Basic
-    @Column(name = "passportID", nullable = false, length = 64)
+    @Column(name = "passportID", nullable = false)
     private String passportID;
 
     @Basic
