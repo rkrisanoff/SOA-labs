@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class Location {
-    private double x;
+    private Double x;
     @NotNull(message = "y must be not null")
     private Long y; //Поле не может быть null
     @NotNull(message = "z must be not null")

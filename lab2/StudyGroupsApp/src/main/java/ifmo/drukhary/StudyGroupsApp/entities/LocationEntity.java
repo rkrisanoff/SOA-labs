@@ -10,7 +10,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "locations", schema = "", catalog = "")
+@Table(name = "locations")
 public class LocationEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +19,7 @@ public class LocationEntity implements Serializable {
 
     @Basic
     @Column(name = "x", nullable = true, precision = 0)
-    private double x;
+    private Double x;
 
     @Basic
     @Column(name = "y", nullable = false)
@@ -36,7 +36,7 @@ public class LocationEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LocationEntity that = (LocationEntity) o;
-        return y == that.y && Double.compare(z, that.z) == 0 && Objects.equals(x, that.x);
+        return Objects.equals(y, that.y) && Double.compare(z, that.z) == 0 && Objects.equals(x, that.x);
     }
 
     @Override

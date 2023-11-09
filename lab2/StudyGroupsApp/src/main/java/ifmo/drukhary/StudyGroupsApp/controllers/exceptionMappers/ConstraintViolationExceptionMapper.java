@@ -1,6 +1,6 @@
 package ifmo.drukhary.StudyGroupsApp.controllers.exceptionMappers;
 
-import ifmo.drukhary.StudyGroupsApp.DTO.ErrorDTO;
+import ifmo.drukhary.StudyGroupsApp.DTO.ErrorData;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
@@ -21,7 +21,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
         }
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .entity(new ErrorDTO(errors.stream().reduce("Errors: ", (acc, error) -> acc + " - " + error + "\n")))
+                .entity(new ErrorData(errors.stream().reduce("Errors: ", (acc, error) -> acc + " - " + error + "\n")))
                 .build();
     }
 }

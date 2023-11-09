@@ -1,5 +1,6 @@
 package ifmo.drukhary.StudyGroupsApp.entities;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -8,11 +9,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Data
-//@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "study_groups", schema = "", catalog = "")
+@Table(name = "study_groups")
 public class StudyGroupEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +29,7 @@ public class StudyGroupEntity implements Serializable {
 
     @Basic
     @Column(name = "creationDate", nullable = false)
+//    @JsonbDateFormat("yyyy-MM-ddT00:00:00Z")
     private java.time.LocalDate creationDate;
 
     @Basic

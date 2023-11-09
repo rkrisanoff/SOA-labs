@@ -27,6 +27,13 @@ public class StudyGroupsController {
 
     @EJB
     private StudyGroupService studyGroupService;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/ping")
+    public Response ping()
+            throws StudyGroupDoesNotExistException {
+        return Response.ok("PONG").build();
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,8 +52,8 @@ public class StudyGroupsController {
     public Response getStudyGroups(
             @QueryParam("filter") List<String> filters,
             @QueryParam("sort") List<String> sorts,
-            @QueryParam("page") @Positive(message = "page must be positive") @DefaultValue("1") int page,
-            @QueryParam("size") @Positive(message = "size must be positive") @DefaultValue("25") int size
+            @QueryParam("page") @Valid @Positive(message = "page must be positive") @DefaultValue("1") int page,
+            @QueryParam("size") @Valid @Positive(message = "size must be positive") @DefaultValue("25") int size
     ) throws WrongFilterException {
         List<StudyGroupEntity> studyGroups = studyGroupService.getAll(filters, sorts, page, size);
         return Response.ok().entity(studyGroups).build();
@@ -57,10 +64,10 @@ public class StudyGroupsController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{id}/")
     public Response deleteStudyGroup(
-            @PathParam("id") @Positive(message = "id must be positive") int id)
+            @PathParam("id") @Valid @Positive(message = "id must be positive") int id)
             throws StudyGroupDoesNotExistException {
         studyGroupService.deleteById(id);
-        return Response.ok().entity("ok").build();
+        return Response.ok().entity("successful").build();
     }
 
     @PUT
@@ -68,7 +75,7 @@ public class StudyGroupsController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}/")
     public Response updateStudyGroup(
-            @PathParam("id") @Positive(message = "id must be positive") int id,
+            @PathParam("id") @Valid @Positive(message = "id must be positive") int id,
             @NotNull(message = "Study group must not be null") @Valid StudyGroupBase studyGroup)
             throws StudyGroupDoesNotExistException {
         StudyGroupEntity updatedStudyGroup = studyGroupService.updateById(id, studyGroup);
@@ -83,7 +90,7 @@ public class StudyGroupsController {
         if (maybeCreatedStudyGroup.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        return Response.ok().entity(maybeCreatedStudyGroup.get()).build();
+        return Response.ok().entity("successful").build();
     }
 
     @GET

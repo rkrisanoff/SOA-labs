@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Data
 public class Coordinates {
-    private float x;
+    private Float x;
     @NotNull(message="y must be not null")
     private Float y; //Поле не может быть null
 }

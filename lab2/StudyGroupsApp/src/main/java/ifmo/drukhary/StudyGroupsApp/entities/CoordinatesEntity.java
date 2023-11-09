@@ -10,15 +10,15 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Coordinates", schema = "", catalog = "")
+@Table(name = "coordinates")
 public class CoordinatesEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
     @Basic
-    @Column(name = "x", nullable = false)
-    private float x;
+    @Column(name = "x", nullable = true)
+    private Float x;
     @Basic
     @Column(name = "y", nullable = false)
     private Float y;

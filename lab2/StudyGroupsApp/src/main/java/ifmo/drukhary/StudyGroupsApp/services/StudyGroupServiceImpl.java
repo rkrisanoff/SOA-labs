@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static ifmo.drukhary.StudyGroupsApp.utils.Constaints.STUDY_GROUP_VALIDATION_EXPRESSION;
+import static ifmo.drukhary.StudyGroupsApp.utils.Constants.STUDY_GROUP_VALIDATION_EXPRESSION;
 
 @Stateless
 public class StudyGroupServiceImpl implements StudyGroupService {
@@ -120,6 +120,10 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         PersonEntity personEntity = new PersonEntity();
         StudyGroupEntity studyGroupEntity = new StudyGroupEntity();
 
+        personEntity.setLocation(locationEntity);
+        studyGroupEntity.setGroupAdmin(personEntity);
+        studyGroupEntity.setCoordinates(coordinatesEntity);
+
         studyGroupEntity.setName(studyGroup.getName());
         studyGroupEntity.setSemesterEnum(studyGroup.getSemesterEnum());
         studyGroupEntity.setStudentsCount(studyGroup.getStudentsCount());
@@ -127,13 +131,11 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         studyGroupEntity.setShouldBeExpelled(studyGroup.getShouldBeExpelled());
         studyGroupEntity.setCreationDate(LocalDate.now());
 
-        studyGroupEntity.setGroupAdmin(personEntity);
-        studyGroupEntity.setCoordinates(coordinatesEntity);
+
 
         personEntity.setName(studyGroup.getGroupAdmin().getName());
         personEntity.setNationality(studyGroup.getGroupAdmin().getNationality());
         personEntity.setPassportID(studyGroup.getGroupAdmin().getPassportID());
-        personEntity.setLocation(locationEntity);
 
         locationEntity.setX(studyGroup.getGroupAdmin().getLocation().getX());
         locationEntity.setY(studyGroup.getGroupAdmin().getLocation().getY());

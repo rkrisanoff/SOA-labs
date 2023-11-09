@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 public class StudyGroupBase {
     @NotNull
-    @Size(min = 1, max = 50, message = "Name must be between 2 and 50 characters")
+    @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
+    @Pattern(regexp = "[a-zA-ZА-Яа-яёЁ0-9]*", message = "Study group name must contain only english and russian characters, and also digits")
     private String name; //Поле не может быть null, Строка не может быть пустой
     @Valid
     @NotNull(message = "coordinates must be not null")

@@ -155,7 +155,7 @@ public class StudyGroupRepoImpl implements StudyGroupRepo {
                 = criteriaQuery.from(StudyGroupEntity.class);
 
         criteriaQuery.select(root)
-                .where(criteriaBuilder.like(root.get("name"), "%" + name + "%"))
+                .where(criteriaBuilder.like(root.get("name"), name + "%"))
                 .orderBy(criteriaBuilder.asc(root.get("id")));
 
 
