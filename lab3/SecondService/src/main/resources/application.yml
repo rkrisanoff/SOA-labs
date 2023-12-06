@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: secondservise
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  feign:
+    httpclient:
+      disable-ssl-validation: true
+      enabled: true
+    okhttp:
+      enabled: true
+
+server:
+  port: 8084
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
