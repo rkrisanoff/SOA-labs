@@ -1,11 +1,13 @@
-package com.example.eureka.server.eurekaserver;
+package ifmo.drukhary.configserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EurekaServerApplicationTests {
+class ConfigserverApplicationTests {
 
-
+	@Test
+	void contextLoads() {
+	}
 
 }
