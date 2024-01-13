@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: isu-app
+  profiles:
+    active: dev
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      username: test
+      password: test
+server:
+  port: 8084
